@@ -8,6 +8,7 @@
                 <h3>Popular Posts</h3>
 
                 <div class="block-1-2 block-m-full popular__posts">
+                    <!--
                     <article class="col-block popular__post">
                         <a href="#0" class="popular__thumb">
                             <img src="<?php echo base_url('assets/images/thumbs/small/tulips-150.jpg');?>" alt="">
@@ -18,56 +19,28 @@
                             <span class="popular__date"><span>on</span> <time datetime="2018-06-14">Jun 14, 2018</time></span>
                         </section>
                     </article>
-                    <article class="col-block popular__post">
-                        <a href="#0" class="popular__thumb">
-                            <img src="<?php echo base_url('assets/images/thumbs/small/wheel-150.jpg') ?>" alt="">
-                        </a>
-                        <h5><a href="#0">Visiting Theme Parks Improves Your Health.</a></h5>
-                        <section class="popular__meta">
-                            <span class="popular__author"><span>By</span> <a href="#0">John Doe</a></span>
-                            <span class="popular__date"><span>on</span> <time datetime="2018-06-12">Jun 12, 2018</time></span>
-                        </section>
-                    </article>
-                    <article class="col-block popular__post">
-                        <a href="#0" class="popular__thumb">
-                            <img src="<?php echo base_url('assets/images/thumbs/small/shutterbug-150.jpg') ?>" alt="">
-                        </a>
-                        <h5><a href="#0">Key Benefits Of Family Photography.</a></h5>
-                        <section class="popular__meta">
-                            <span class="popular__author"><span>By</span> <a href="#0">John Doe</a></span>
-                            <span class="popular__date"><span>on</span> <time datetime="2018-06-12">Jun 12, 2018</time></span>
-                        </section>
-                    </article>
-                    <article class="col-block popular__post">
-                        <a href="#0" class="popular__thumb">
-                            <img src="<?php echo base_url('assets/images/thumbs/small/cookies-150.jpg') ?>" alt="">
-                        </a>
-                        <h5><a href="#0">Absolutely No Sugar Oatmeal Cookies.</a></h5>
-                        <section class="popular__meta">
-                            <span class="popular__author"><span>By</span> <a href="#0"> John Doe</a></span>
-                            <span class="popular__date"><span>on</span> <time datetime="2018-06-12">Jun 12, 2018</time></span>
-                        </section>
-                    </article>
-                    <article class="col-block popular__post">
-                        <a href="#0" class="popular__thumb">
-                            <img src="<?php echo base_url('assets/images/thumbs/small/beetle-150.jpg') ?>" alt="">
-                        </a>
-                        <h5><a href="#0">Throwback To The Good Old Days.</a></h5>
-                        <section class="popular__meta">
-                            <span class="popular__author"><span>By</span> <a href="#0">John Doe</a></span>
-                            <span class="popular__date"><span>on</span> <time datetime="2018-06-12">Jun 12, 2018</time></span>
-                        </section>
-                    </article>
-                    <article class="col-block popular__post">
-                        <a href="#0" class="popular__thumb">
-                            <img src="<?php echo base_url('assets/images/thumbs/small/salad-150.jpg') ?>" alt="">
-                        </a>
-                        <h5>Healthy Mediterranean Salad Recipes</h5>
-                        <section class="popular__meta">
-                            <span class="popular__author"><span>By</span> <a href="#0"> John Doe</a></span>
-                            <span class="popular__date"><span>on</span> <time datetime="2018-06-12">Jun 12, 2018</time></span>
-                        </section>
-                    </article>
+                    -->
+                    <?php
+                            setlocale(LC_ALL,"es_ES@euro","es_ES","esp");
+                            $db = \Config\Database::connect();
+                            $query="SELECT * FROM posts WHERE show_home=1";
+                            $query = $db->query($query);
+                            $result = $query->getResult();
+
+                            foreach ($result as $post) { ?>
+                                <article class="col-block popular__post">
+                                    <a href="<?php echo base_url() . "/dashboard/post/" . $post->slug . "/" . $post->id ?>" class="popular__thumb">
+                                        <img src="<?php echo base_url('uploads/posts/images/' . $post->banner);?>" alt="">
+                                    </a>
+                                    <h5><?php echo $post->title?></h5>
+                                    <section class="popular__meta">
+                                        <span class="popular__author"><span>Por</span> <a href="#0">Usuario</a></span>
+                                        <span class="popular__date"><span>en</span> <time datetime="<?php echo $post->created_at?>"><?php echo iconv('ISO-8859-2', 'UTF-8', strftime("%A, %d de %B de %Y", strtotime($post->created_at)));?></time></span>
+                                    </section>
+                                </article>
+                        <?php    } ?>
+
+
                 </div> <!-- end popular_posts -->
             </div> <!-- end popular -->
 
@@ -77,12 +50,15 @@
                         <h3>Categories</h3>
         
                         <ul class="linklist">
-                            <li><a href="#0">Lifestyle</a></li>
-                            <li><a href="#0">Travel</a></li>
-                            <li><a href="#0">Recipes</a></li>
-                            <li><a href="#0">Management</a></li>
-                            <li><a href="#0">Health</a></li>
-                            <li><a href="#0">Creativity</a></li>
+                        <?php
+                            $db = \Config\Database::connect();
+                            $query="SELECT * FROM categories";
+                            $query = $db->query($query);
+                            $result = $query->getResult();
+
+                            foreach ($result as $category) { ?>
+                                <li><a href="<?php echo base_url() . "/dashboard/category/" . $category->id ?>"><?php echo $category->name ?></a></li>
+                        <?php    } ?>
                         </ul>
                     </div> <!-- end categories -->
         
@@ -90,12 +66,8 @@
                         <h3>Site Links</h3>
         
                         <ul class="linklist">
-                            <li><a href="#0">Home</a></li>
-                            <li><a href="#0">Blog</a></li>
-                            <li><a href="#0">Styles</a></li>
-                            <li><a href="#0">About</a></li>
-                            <li><a href="#0">Contact</a></li>
-                            <li><a href="#0">Privacy Policy</a></li>
+                            <li><a href="<?php echo base_url() ?>">Home</a></li>
+                            <li><a href="<?php echo base_url(). "/dashboard/blog" ?>">Blog</a></li>
                         </ul>
                     </div> <!-- end sitelinks -->
                 </div>
@@ -129,12 +101,15 @@
 
                     <p>Sit vel delectus amet officiis repudiandae est voluptatem. Tempora maxime provident nisi et fuga et enim exercitationem ipsam. Culpa consequatur occaecati.</p>
 
-                    <div class="subscribe-form">
-                        <form id="mc-form" class="group" novalidate="true">
+                    <div class="message">
 
-                            <input type="email" value="" name="EMAIL" class="email" id="mc-email" placeholder="Email Address" required="">
+                    </div>
+                    <div class="subscribe-form">
+                        <form id="mc-form" class="group" novalidate="true" >
+
+                            <input type="email" value="" name="email" class="email" id="email" placeholder="Email Address" required="">
                 
-                            <input type="submit" name="subscribe" value="Send">
+                            <input type="submit" name="subscribe" id="subscribe" value="Send">
                 
                             <label for="mc-email" class="subscribe-message"></label>
                 
@@ -190,10 +165,60 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 
     <!-- Java Script
     ================================================== -->
-    <script src="<?php echo base_url('assets/js/jquery-3.2.1.min.js'); ?>"></script>
+  <!--  <script src="<?php echo base_url('assets/js/jquery-3.2.1.min.js'); ?>"></script> -->
     <script src="<?php echo base_url('assets/js/plugins.js'); ?>"></script>
     <script src="<?php echo base_url('assets/js/main.js'); ?>"></script>
 
+    <script type="text/javascript">
+ 
+
+             $(document).ready(function(){
+                $("#subscribe").click(function(event){
+                    event.preventDefault();
+
+                    var confirmText = "esta seguro de subscribirse a la newsletter?";
+                        if(! confirm(confirmText)) {
+                            return;
+                        }
+
+                        $.ajax({  
+                            url: '<?php echo base_url() . '/dashboard/add_newsletter'; ?>',
+                            type: 'POST',
+                            dataType:'json',
+                            data:{email:$("#email").val()},
+                            success:function(data){
+                                console.log(data);
+                                if(data) {
+                                    $(".message").html(`
+                                    <div class="alert-box alert-box--success alert-dismissible fade show" role="alert">
+                                        <strong>Hey! </strong> te has suscrito a la newsletter.
+                                        <span class="alert-box__close cerrar" aria-hidden="true">&times;</span>
+                                    </div>
+                                    `);
+                                } else {
+                                    $(".message").html(`
+                                    <div class="alert-box alert-box--notice alert-dismissible fade show" role="alert">
+                                        <strong>Error! </strong> no te has suscrito a la newsletter.
+                                        <span class="alert-box__close cerrar"  aria-hidden="true">&times;</span>
+                                    </div>
+                                    `);
+                                }
+                                setTimeout(function(){ $(".cerrar").trigger("click"); }, 3000);
+                            
+                            }  
+                        });
+                });
+
+                $(document).on("click",".cerrar",function() {
+                    $(".message").empty();
+                });
+
+            });
+            
+            
+            
+            
+    </script>
 </body>
 
 </html>

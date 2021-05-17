@@ -1,4 +1,5 @@
 
+
 <div class="s-featured">
     <div class="row">
         <div class="col-full">
@@ -14,7 +15,7 @@
 
 
                     <label for="content">Contenido</label>
-                    <textarea id="content" name="content" placeholder="Contenido"></textarea>
+                    <textarea id="editor" name="content" placeholder="Contenido..."></textarea><br>
 
                     <label for="categories">Categoría</label>
                     <select name="category">
@@ -33,3 +34,14 @@
         </div>
     </div>
 </div>
+<script src="https://cdn.ckeditor.com/ckeditor5/27.1.0/classic/ckeditor.js"></script>
+<script>
+$(document).ready(function() {
+    ClassicEditor
+        .create( document.querySelector( '#editor' ) )
+        .catch( error => {
+            console.error( error );
+        });
+});
+
+</script>

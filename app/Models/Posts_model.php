@@ -21,7 +21,8 @@ class Posts_model extends Model
         "category",
         "tags",
         "created_at",
-        "created_by"
+        "created_by",
+        "show_home"
     ];
 
 }

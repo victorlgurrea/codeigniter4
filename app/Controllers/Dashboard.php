@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\Posts_model;
 use App\Models\Users_model;
 use App\Models\Categories_model;
+use App\Models\Newsletter_model;
 use function PHPSTORM_META\map;
 
 class Dashboard extends BaseController
@@ -99,10 +100,10 @@ class Dashboard extends BaseController
 			}
 			
 		    $img = $this->request->getFile("banner");
-
+	
 			if ($img->isValid() && ! $img->hasMoved()) {
 				$newName = $img->getRandomName();
-				$img->move(WRITEPATH . "uploads/posts/images", $newName);
+				$img->move(ROOTPATH . "public\uploads\posts\images", $newName);
 			} else {
 				$data['errors'] = ["imagen no valida"];
 				$data['url'] ="/dashboard/upload_post";
@@ -113,11 +114,34 @@ class Dashboard extends BaseController
 			$_POST['banner'] = $newName;
 			$_POST['slug'] = url_title($_POST['title']);
 			$_POST['created_at'] = date("Y-m-d H:i:s");
+			$_POST['show_home'] = 1;
 
 			$post_model->insert($_POST);
 		}
 
 		$this->load_view('upload_post', $data);
+		die;
+	}
+
+	public function add_newsletter() {
+	
+		if($_POST['email'] != "") {
+			if(! filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+				echo json_encode(false);
+				die;
+			}
+
+			$newsletter = new Newsletter_model();
+			$_POST['added_at'] = date("Y-m-d H:i:s");
+			$insert = $newsletter->insert($_POST);
+			if($insert){
+				echo json_encode(true);
+				die;
+			}
+			echo json_encode(false);
+			die;
+		}
+		echo json_encode(false);
 		die;
 	}
 
