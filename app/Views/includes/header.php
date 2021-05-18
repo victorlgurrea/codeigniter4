@@ -80,12 +80,7 @@
                     <a href="#0" title="">Categories</a>
                     <ul class="sub-menu">
                         <?php
-                            $db = \Config\Database::connect();
-                            $query="SELECT * FROM categories";
-                            $query = $db->query($query);
-                            $result = $query->getResult();
-
-                            foreach ($result as $category) { ?>
+                            foreach ($categories_home as $category) { ?>
                                 <li><a href="<?php echo base_url() . "/dashboard/category/" . $category->id ?>"><?php echo $category->name ?></a></li>
                         <?php    } ?>
                     </ul>

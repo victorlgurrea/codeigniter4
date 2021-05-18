@@ -21,15 +21,11 @@
                     </article>
                     -->
                     <?php
-                            setlocale(LC_ALL,"es_ES@euro","es_ES","esp");
-                            $db = \Config\Database::connect();
-                            $query="SELECT * FROM posts WHERE show_home=1";
-                            $query = $db->query($query);
-                            $result = $query->getResult();
+                            
 
-                            foreach ($result as $post) { ?>
-                                <article class="col-block popular__post">
-                                    <a href="<?php echo base_url() . "/dashboard/post/" . $post->slug . "/" . $post->id ?>" class="popular__thumb">
+                            foreach ($posts_home as $post) { ?>
+                                <article class="col popular__post">
+                                    <a href="<?php echo base_url() . "/dashboard/post/" . $post->id ?>" class="popular__thumb">
                                         <img src="<?php echo base_url('uploads/posts/images/' . $post->banner);?>" alt="">
                                     </a>
                                     <h5><?php echo $post->title?></h5>
@@ -51,12 +47,9 @@
         
                         <ul class="linklist">
                         <?php
-                            $db = \Config\Database::connect();
-                            $query="SELECT * FROM categories";
-                            $query = $db->query($query);
-                            $result = $query->getResult();
+                          
 
-                            foreach ($result as $category) { ?>
+                            foreach ($categories_home as $category) { ?>
                                 <li><a href="<?php echo base_url() . "/dashboard/category/" . $category->id ?>"><?php echo $category->name ?></a></li>
                         <?php    } ?>
                         </ul>
@@ -111,8 +104,7 @@
                 
                             <input type="submit" name="subscribe" id="subscribe" value="Send">
                 
-                            <label for="mc-email" class="subscribe-message"></label>
-                
+                            <!--<label for="mc-email" class="subscribe-message"></label>-->
                         </form>
                     </div>
 
@@ -187,22 +179,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
                             dataType:'json',
                             data:{email:$("#email").val()},
                             success:function(data){
-                                console.log(data);
-                                if(data) {
-                                    $(".message").html(`
-                                    <div class="alert-box alert-box--success alert-dismissible fade show" role="alert">
-                                        <strong>Hey! </strong> te has suscrito a la newsletter.
-                                        <span class="alert-box__close cerrar" aria-hidden="true">&times;</span>
-                                    </div>
-                                    `);
-                                } else {
-                                    $(".message").html(`
-                                    <div class="alert-box alert-box--notice alert-dismissible fade show" role="alert">
-                                        <strong>Error! </strong> no te has suscrito a la newsletter.
-                                        <span class="alert-box__close cerrar"  aria-hidden="true">&times;</span>
-                                    </div>
-                                    `);
-                                }
+                                fill_message(data);
                                 setTimeout(function(){ $(".cerrar").trigger("click"); }, 3000);
                             
                             }  
@@ -215,7 +192,16 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 
             });
             
-            
+            function fill_message(data) {
+                var alert_class = ( data.status == 200) ? 'alert-box--success' : 'alert-box--error';
+                var alert_strong = ( data.status == 200) ? 'Éxito' : 'Error';
+                $(".message").html(`
+                                    <div class="alert-box  `+ alert_class +` alert-dismissible fade show" role="alert">
+                                        <strong>`+ alert_strong + `</strong> ` + data.message + `
+                                        <span class="alert-box__close cerrar" aria-hidden="true">&times;</span>
+                                    </div>
+                `);
+            }
             
             
     </script>

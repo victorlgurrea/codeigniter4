@@ -123,11 +123,44 @@ class Dashboard extends BaseController
 		die;
 	}
 
+	public function post(int $id) {
+
+		if($id != null) {
+			$db = \Config\Database::connect();
+			$query ="SELECT *, c.id as category_id, c.name as category_name FROM `posts` p 
+					join categories c ON c.id = p.category
+					WHERE p.id= ". $id;
+
+			$query = $db->query($query);
+			$post = $query->getResult()[0];
+
+
+			$querystring = "SELECT p.id,p.title, c.id as category_id, c.name as category_name FROM `posts` p 
+			join categories c ON c.id = p.category ORDER BY rand() LIMIT 1";
+
+			$query = $db->query($querystring);
+			$post_random_previous = $query->getResult()[0];
+
+			$query = $db->query($querystring);
+			$post_random_next = $query->getResult()[0];
+
+			$data['post'] = $post;
+			$data['post_random_previous'] = $post_random_previous;
+			$data['post_random_next'] = $post_random_next;
+			$this->load_view('post', $data);
+		}
+	}
+
 	public function add_newsletter() {
 	
+		$obj = new \stdClass();
+
 		if($_POST['email'] != "") {
+			//control de email válido
 			if(! filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
-				echo json_encode(false);
+				$obj->status = 422;
+				$obj->message ="Escriba un correo válido";
+				echo json_encode($obj);
 				die;
 			}
 
@@ -135,13 +168,20 @@ class Dashboard extends BaseController
 			$_POST['added_at'] = date("Y-m-d H:i:s");
 			$insert = $newsletter->insert($_POST);
 			if($insert){
-				echo json_encode(true);
+				$obj->status = 200;
+				$obj->message ="Te has suscrito a la newsletter";
+				echo json_encode($obj);
 				die;
 			}
-			echo json_encode(false);
+			$obj->status = 422;
+			$obj->message ="Ya estas suscrito a la newsletter";
+			echo json_encode($obj);
 			die;
 		}
-		echo json_encode(false);
+
+		$obj->status = 422;
+		$obj->message ="Escriba un correo válido";
+		echo json_encode($obj);
 		die;
 	}
 
@@ -169,6 +209,19 @@ class Dashboard extends BaseController
 
 	public function load_view(string $view = null, array $data = [])
 	{
+		$db = \Config\Database::connect();
+		$query="SELECT * FROM categories";
+		$query = $db->query($query);
+		$categories_home = $query->getResult();
+		$data['categories_home'] = $categories_home;
+
+		setlocale(LC_ALL,"es_ES@euro","es_ES","esp");
+        $query="SELECT * FROM posts WHERE show_home=1";
+        $query = $db->query($query);
+        $posts_home = $query->getResult();
+
+		$data['posts_home'] = $posts_home;
+
 		echo view('includes/header', $data);
 		echo view($view, $data);
 		echo view('includes/footer', $data);
