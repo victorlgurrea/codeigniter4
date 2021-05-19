@@ -23,7 +23,7 @@
     ================================================== -->
     <script src="<?php echo base_url('assets/js/jquery-3.2.1.min.js'); ?>"></script>
     <script src="<?php echo base_url('assets/js/modernizr.js');?>"></script>
-
+    <script src="https://cdn.ckeditor.com/ckeditor5/27.1.0/classic/ckeditor.js"></script>
     <!-- favicons
     ================================================== -->
     <link rel="shortcut icon" href="<?php echo base_url('assets/images/favicon.ico');?>" type="image/x-icon">

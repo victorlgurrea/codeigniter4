@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\Posts_model;
 use App\Models\Users_model;
 use App\Models\Categories_model;
+use App\Models\Comments_model;
 use App\Models\Newsletter_model;
 use function PHPSTORM_META\map;
 
@@ -126,6 +127,44 @@ class Dashboard extends BaseController
 	public function post(int $id) {
 
 		if($id != null) {
+			$comments_model = new Comments_model();
+			if($_POST) {
+				
+				helper(["url","form"]);
+
+				$validation = \Config\Services::validation();
+				$validation->setRules([
+					"name" => "required",
+					"email" => "required",
+					"comment" => "required|min_length[20]",
+				],
+				[
+					"name" => [
+						"required" => "El nombre es requerido"
+					],
+					"email" => [
+						"required" => "El email es requerido"
+					],
+					"comment" => [
+						"required" 		=> "El contenido es requerido",
+						"min_length"	=> "Mínimo 20 carácteres"
+					],					
+				]
+				);
+
+				if(! $validation->withRequest($this->request)->run()) {
+					$errors = $validation->getErrors();
+					$data['errors'] = $errors;
+					$data['url'] ="/dashboard/post/" . $id;
+					$this->load_view('includes/error', $data);
+					die;
+				}
+
+				$_POST['post_id'] = $id;
+				$_POST['date'] = date("Y-m-d H:i:s");
+				$comments_model->insert($_POST);
+			}
+
 			$db = \Config\Database::connect();
 			$query ="SELECT *, c.id as category_id, c.name as category_name FROM `posts` p 
 					join categories c ON c.id = p.category
@@ -143,6 +182,11 @@ class Dashboard extends BaseController
 
 			$query = $db->query($querystring);
 			$post_random_next = $query->getResult()[0];
+
+			//carga de comentarios 
+			setlocale(LC_ALL, "es_ES", 'Spanish_Spain', 'Spanish');
+			$data['comments'] = $comments_model->where('post_id', $id)->findAll();
+
 
 			$data['post'] = $post;
 			$data['post_random_previous'] = $post_random_previous;

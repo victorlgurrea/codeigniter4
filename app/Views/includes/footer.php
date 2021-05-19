@@ -5,7 +5,7 @@
         <div class="row">
 
             <div class="col-seven md-six tab-full popular">
-                <h3>Popular Posts</h3>
+                <h3>Posts Populares</h3>
 
                 <div class="block-1-2 block-m-full popular__posts">
                     <!--
