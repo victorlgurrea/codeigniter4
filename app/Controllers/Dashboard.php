@@ -195,6 +195,20 @@ class Dashboard extends BaseController
 		}
 	}
 
+	public function category(string $id) {
+		$pager = \Config\Services::pager();
+
+		setlocale(LC_ALL, "es_ES", 'Spanish_Spain', 'Spanish');
+		$post_model = new Posts_model();
+		$posts = $post_model->where('category', (int)$id);
+		$category_model = new Categories_model();
+		$category = $category_model->where('id',(int)$id)->first();
+		$data['category_name'] = $category['name'];
+		$data['pager'] = $pager;
+		$data['posts'] = $posts->paginate(10);
+		$this->load_view('category', $data);
+	}
+
 	public function add_newsletter() {
 	
 		$obj = new \stdClass();
